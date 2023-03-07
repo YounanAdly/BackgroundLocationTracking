@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentSender
 import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -41,14 +42,13 @@ class MainActivity : ComponentActivity() {
             0
         )
 
-
         setContent {
             BackgroundLocationTrackingTheme {
                 Column(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Button(onClick = {
-                        checkGpsOpen()
+                        DefaultLocationClient(this@MainActivity, null).checkGpsOpened(this@MainActivity)
                     }) {
                         Text(text = "Start")
                     }
@@ -64,40 +64,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    private fun checkGpsOpen() {
-            val request = LocationRequest.create()
-                .setInterval(50)
-                .setFastestInterval(100)
-
-            val builder: LocationSettingsRequest.Builder = LocationSettingsRequest.Builder()
-                .addLocationRequest(request)
-
-            val task: Task<LocationSettingsResponse> =
-                LocationServices.getSettingsClient(this)
-                    .checkLocationSettings(builder.build())
-
-            task.addOnSuccessListener {
-                Intent(applicationContext, LocationService::class.java).apply {
-                    action = LocationService.ACTION_START
-                    startService(this)
-                }
-            }
-
-            task.addOnFailureListener { exception ->
-                if (exception is ResolvableApiException) {
-                    try {
-                        exception.startResolutionForResult(
-                            this,
-                            100
-                        )
-                    } catch (sendEx: IntentSender.SendIntentException) {
-                        // Ignore the error.
-                    }
-                }
-
-        }
-
     }
 }
