@@ -67,11 +67,6 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun checkGpsOpen() {
-
-        val locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        val isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-
             val request = LocationRequest.create()
                 .setInterval(50)
                 .setFastestInterval(100)
